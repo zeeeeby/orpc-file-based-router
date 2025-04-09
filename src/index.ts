@@ -118,27 +118,30 @@ function buildRouter(routes: Route[], mapper: (currentRoute: Route, currentExpor
  * @returns A simplified version of the router with unnecessary nesting removed
  */
 function simplifyRouter(router: Router) {
-    const simplifiedRouter = {} as Router
+    let simplifiedRouter = {} as Router
 
     for (const key in router) {
-        if (typeof router[key] === "string" || isORPCProcedure(router, key)) {
+        if (isLeaf(router[key])) {
             simplifiedRouter[key] = router[key]
-        }
-        else if (typeof router[key] === 'object' && isSingleLeaf(router[key])) {
-            const childKey = Object.keys(router[key])[0]!
-            simplifiedRouter[key] = router[key][childKey]
         }
         else {
             simplifiedRouter[key] = simplifyRouter(router[key])
+            if (isSingleChild(simplifiedRouter[key])) {
+                const childKey = Object.keys(simplifiedRouter[key])[0]!
+                simplifiedRouter[key] = simplifiedRouter[key][childKey]
+            }
         }
     }
 
     return simplifiedRouter
 }
-function isORPCProcedure(obj: Router, key: string) {
-    return '~orpc' in obj[key]
+function isORPCProcedure(obj: Router) {
+    return '~orpc' in obj
 }
-function isSingleLeaf(obj: Router) {
+function isLeaf(obj: Router) {
+    return typeof obj === "string" || isORPCProcedure(obj)
+}
+function isSingleChild(obj: Router) {
     const keys = Object.keys(obj)
     return keys.length === 1
 }
