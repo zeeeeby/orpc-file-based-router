@@ -30,20 +30,20 @@ const handler = new RPCHandler(router)
 ```                                                                                                              
 src/routes
   ├── auth
-  │    ├── me.ts (exports: me)
-  │    ├── signin.ts (exports: signin)
-  │    └── signup.ts (exports: signup)
+  │    ├── me.ts 
+  │    ├── signin.ts 
+  │    └── signup.ts 
   │
   ├── planets
   │    ├── {id}
-  │    │    ├── find.ts (exports: findPlanet)
-  │    │    └── update.ts (exports: updatePlanet)
+  │    │    ├── find.ts 
+  │    │    └── update.ts 
   │    │
-  │    ├── create.ts (exports: createPlanet)
-  │    ├── index.ts (exports: indexRoute)
-  │    └── list.ts (exports: listPlanets)
+  │    ├── create.ts 
+  │    ├── index.ts 
+  │    └── list.ts 
   │
-  └── sse.ts (exports: sse)
+  └── sse.ts 
 ```
 
 ### Generated result
