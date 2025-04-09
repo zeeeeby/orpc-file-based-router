@@ -13,7 +13,6 @@ yarn add orpc-file-based-router
 ## Usage
 
 ```typescript
-// generator.ts
 import { generateRouter } from 'orpc-file-based-router'
 
 const routesDir = new URL('./routes', import.meta.url).pathname
@@ -43,7 +42,6 @@ src/routes
   │
   └── sse.ts (exports: sse)
 ```
-### Run `tsx src/generator.ts `
 
 ### Generated result
 
