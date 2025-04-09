@@ -1,6 +1,6 @@
 {
   "name": "orpc-file-based-router",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "File-based router plugin for oRPC - automatically generate oRPC router from your file structure",
   "author": "zeeeeby",
   "license": "MIT",

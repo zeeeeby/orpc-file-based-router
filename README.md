@@ -2,7 +2,7 @@
 
 A plugin for [oRPC](https://orpc.unnoq.com) that automatically creates an oRPC router configuration based on your file structure.
 
-> ⚠️ **IMPORTANT:** Works only at nodejs runtime
+> ⚠️ **IMPORTANT:** At this time, the plugin's functionality is only guaranteed in nodejs runtime
 
 ## Installation
 
