@@ -2,6 +2,8 @@
 
 A plugin for [oRPC](https://orpc.unnoq.com) that automatically creates an oRPC router configuration based on your file structure.
 
+> ⚠️ **IMPORTANT:** Works only at nodejs runtime
+
 ## Installation
 
 ```bash
@@ -13,6 +15,7 @@ yarn add orpc-file-based-router
 ## Usage
 
 ```typescript
+import { RPCHandler } from '@orpc/server/node'
 import { generateRouter } from 'orpc-file-based-router'
 
 const routesDir = new URL('./routes', import.meta.url).pathname
@@ -73,3 +76,6 @@ export const router = {
 }
 ```
 
+## License
+
+MIT
