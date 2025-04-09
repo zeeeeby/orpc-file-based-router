@@ -16,12 +16,11 @@ yarn add orpc-file-based-router
 // generator.ts
 import { generateRouter } from 'orpc-file-based-router'
 
-const routesDir = './routes'
-const outputFile = './router.ts'
+const routesDir = new URL('./routes', import.meta.url).pathname
+const outputFile = new URL('./router.ts', import.meta.url).pathname
+const router = await generateRouter(routesDir, outputFile)
 
-generateRouter(routesDir, outputFile)
-  .then(() => console.log('Router generated successfully'))
-  .catch(console.error)
+const handler = new RPCHandler(router)
 ```
 
 ### File Structure Example
