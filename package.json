@@ -1,0 +1,39 @@
+{
+  "name": "orpc-file-based-router",
+  "version": "0.0.1",
+  "description": "File-based router plugin for oRPC - automatically generate oRPC router from your file structure",
+  "author": "zeeeeby",
+  "license": "MIT",
+  "homepage": "https://github.com/zeeeeby/orpc-file-based-router",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeeeeby/orpc-file-based-router.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zeeeeby/orpc-file-based-router/issues"
+  },
+  "keywords": [
+    "orpc",
+    "router",
+    "file-based-routing",
+    "plugin"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npm run type-check && unbuild",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "unbuild": "^3.5.0"
+  }
+}
