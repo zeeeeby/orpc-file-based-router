@@ -14,7 +14,9 @@ structure, similar to Next.js, express-file-routing
 > ⚠️ **IMPORTANT:** At this time, the plugin's functionality is only guaranteed
 > in nodejs runtime
 
-## Get started
+## Quickstart
+
+0. If you're new to oRPC, read the [oRPC documentation](https://orpc.unnoq.com). Install and configure a basic oRPC server
 
 1. Install package
 
