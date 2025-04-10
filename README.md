@@ -72,9 +72,11 @@ const handler = new RPCHandler(router);
 > startServer();
 > ```
 
-## How to generate configuration file
+## Type-Safe Client Configuration (Optional)
 
-1. Call `generateRouter` 
+If you plan to use [oRPC client](https://orpc.unnoq.com/docs/client/client-side), you can set up automatic configuration generation, which can be used for client typing.
+
+1. use `generateRouter`
 
 ```typescript
 import { generateRouter } from "orpc-file-based-router";
@@ -84,7 +86,7 @@ const outputFile = new URL("./router.ts", import.meta.url).pathname;
 generateRouter(routesDir, outputFile);
 ```
 
-2. Generated configuration is ready to use in router client:
+2. Generated router is ready to use in client:
 
 ```typescript
 // router.ts
