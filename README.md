@@ -8,8 +8,8 @@ structure, similar to Next.js, express-file-routing
 - 📁 **File-based structure**: Organize your API endpoints intuitively through your filesystem
 - 🔄 **Zero configuration**: Generate routes automatically based on your directory structure
 - ⚡️ **Development speed**: Eliminate boilerplate code and reduce maintenance overhead
-- 🔍 **Dynamic routing**: Support for path parameters using {param} syntax in file names
-- 📑 **Index handling**: Support for index routes via index.ts files
+- 🔍 **Dynamic routing**: Support for path parameters using `{param}` syntax in file names
+- 📑 **Index handling**: Support for index routes via `index.ts` files
 
 > ⚠️ **IMPORTANT:** At this time, the plugin's functionality is only guaranteed
 > in nodejs runtime
