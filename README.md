@@ -45,7 +45,7 @@ src/routes
   └── sse.ts
 ```
 
-3. Each file should export a oRPC handler function 
+3. Each file should export a oRPC function 
 
 4. Simply replace router in your handlers with the result of the `createRouter`
 function:
