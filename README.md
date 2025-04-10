@@ -45,7 +45,7 @@ src/routes
   └── sse.ts
 ```
 
-3. Each file should export a oRPC function 
+3. Each file should export an oRPC function 
 
 4. Simply replace router in your handlers with the result of the `createRouter`
 function:
@@ -58,7 +58,17 @@ const routesDir = new URL("./routes", import.meta.url).pathname;
 const router = await createRouter(routesDir);
 
 const handler = new RPCHandler(router);
+
 ```
+> **Note:** If your environment doesn't support top-level await, wrap your server startup code in an async function:
+> ```typescript
+> async function startServer() {
+>   const router = await createRouter(routesDir);
+>   const handler = new RPCHandler(router);
+>   // ... start your server
+> }
+> startServer();
+> ```
 
 ## How to generate configuration file
 
