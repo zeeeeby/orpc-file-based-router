@@ -46,6 +46,17 @@ function mergePaths(...paths: string[]) {
 }
 
 
+export async function createRouter(routesDir: string) {
+    const files = walkTree(
+        routesDir,
+    )
+    const exports = await generateRoutes(files)
+
+    return buildRouter(exports, (r, e) => {
+        return (r.exports[e] as any).route({ path: `${r.path}` })
+    })
+}
+
 export async function generateRouter(routesDir: string, outputFile: string) {
     const files = walkTree(
         routesDir,
@@ -66,11 +77,6 @@ export async function generateRouter(routesDir: string, outputFile: string) {
         .replace(/"/g, '')
 
     writeFileSync(join(outputFile), routerContent)
-
-    const router = buildRouter(exports, (r, e) => {
-        return (r.exports[e] as any).route({ path: `${r.path}` })
-    })
-    return router
 }
 
 function buildRoutePath(parsedFile: ParsedPath) {
@@ -124,12 +130,12 @@ function simplifyRouter(router: Router) {
         if (isLeaf(router[key])) {
             simplifiedRouter[key] = router[key]
         }
+        else if (hasSingleLeaf(router[key])) {
+            const childKey = Object.keys(router[key])[0]!
+            simplifiedRouter[key] = router[key][childKey]
+        }
         else {
             simplifiedRouter[key] = simplifyRouter(router[key])
-            if (isSingleChild(simplifiedRouter[key])) {
-                const childKey = Object.keys(simplifiedRouter[key])[0]!
-                simplifiedRouter[key] = simplifiedRouter[key][childKey]
-            }
         }
     }
 
@@ -141,9 +147,9 @@ function isORPCProcedure(obj: Router) {
 function isLeaf(obj: Router) {
     return typeof obj === "string" || isORPCProcedure(obj)
 }
-function isSingleChild(obj: Router) {
+function hasSingleLeaf(obj: Router) {
     const keys = Object.keys(obj)
-    return keys.length === 1
+    return keys.length === 1 && isLeaf(obj[keys[0]!])
 }
 
 type RouteModule = {
