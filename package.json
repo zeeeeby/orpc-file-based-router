@@ -33,7 +33,11 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
+    "@orpc/client": "^1.8.5",
+    "@orpc/server": "^1.8.5",
     "@types/node": "^22.14.0",
-    "unbuild": "^3.5.0"
+    "unbuild": "^3.5.0",
+    "vitest": "^3.2.4",
+    "zod": "^4.1.3"
   }
 }
