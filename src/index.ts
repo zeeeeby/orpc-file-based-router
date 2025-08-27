@@ -75,6 +75,7 @@ export async function generateRouter(routesDir: string, outputFile: string) {
     // eslint-disable-next-line ban/ban
     routerContent += JSON.stringify(content, null, 2)
         .replace(/"/g, '')
+        .replace(/(\s*)([a-zA-Z0-9]+-[a-zA-Z0-9-]+):/g, '$1"$2":');
 
     writeFileSync(join(outputFile), routerContent)
 }
