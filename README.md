@@ -1,15 +1,15 @@
 # orpc-file-based-router
 
-A plugin for [oRPC](https://orpc.unnoq.com) that automatically creates an oRPC router configuration based on your file
-structure, similar to Next.js, express-file-routing
+A plugin for [oRPC](https://orpc.unnoq.com) that automatically generates an oRPC router configuration based on your file
+structure, inspired by Next.js and express-file-routing approaches.
 
-## Highlights
+## ✨ Highlights
 
-- 📁 **File-based structure**: Organize your API endpoints intuitively through your filesystem
-- 🔄 **Zero configuration**: Generate routes automatically based on your directory structure
-- ⚡️ **Development speed**: Eliminate boilerplate code and reduce maintenance overhead
-- 🔍 **Dynamic routing**: Support for path parameters using `{param}` syntax in file names
-- 📑 **Index handling**: Support for index routes via `index.ts` files
+- 📁 **File-based Structure**: Organize your API endpoints intuitively through your filesystem
+- 🔄 **Zero Configuration**: Generate routes automatically based on your directory structure
+- ⚡️ **Development Speed**: Eliminate boilerplate code and reduce maintenance overhead
+- 🔍 **Dynamic Routing**: Support for path parameters using `{param}` syntax in file names
+- 📑 **Index Routes**: Support for index routes via `index.ts` files
 
 > ⚠️ **IMPORTANT:** At this time, the plugin's functionality is only guaranteed
 > in nodejs runtime
@@ -72,11 +72,11 @@ const handler = new RPCHandler(router);
 > startServer();
 > ```
 
-## Type-Safe Client Configuration (Optional)
+## 🔒 Type-Safe Client Configuration (Optional)
 
-If you plan to use [oRPC client](https://orpc.unnoq.com/docs/client/client-side), you can set up automatic configuration generation, which can be used for client typing.
+For users of the [oRPC client](https://orpc.unnoq.com/docs/client/client-side), we provide automatic configuration generation for enhanced type safety and improved developer experience.
 
-1. Add the following code to your main server file (e.g., `server.ts` or `main.ts`) or anywhere else. This will automatically regenerate the router configuration each time your server starts:
+1. Add the following code to your main server file (e.g., `server.ts` or `main.ts`). This will automatically regenerate the router configuration each time your server starts:
 
 ```typescript
 import { generateRouter } from "orpc-file-based-router";
@@ -121,6 +121,16 @@ const client: RouterClient<typeof router> = createORPCClient(link)
 
 ```
 
-## License
+## 🛠 Configuration Options
 
-MIT
+When using `generateRouter`, you can provide additional options to customize the output:
+
+| Field              | Type      | Required | Default Value | Description                                                                                                                     |
+|-------------------|----------|--------------|-----------------------|------------------------------------------------------------------------------------------------------------------------------|
+| `importExtension` | string   | false         | `""`(No extension) | File extension to append to import statements in the generated router. Useful when your build setup requires specific extensions. <br>Example: `.js` → `import { me } from "./routes/auth/me.js"` |
+
+
+
+## 📄 License
+
+MIT License - feel free to use this in your own projects!

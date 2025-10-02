@@ -3,6 +3,6 @@ import { generateRouter } from '../../src'
 const routesDir = new URL('./routes', import.meta.url).pathname
 const outputFile = new URL('./router.ts', import.meta.url).pathname
 
-generateRouter(routesDir, outputFile)
+generateRouter(routesDir, outputFile, { importExtension: ".js" })
   .then(() => console.log('Router generated successfully'))
   .catch(console.error)

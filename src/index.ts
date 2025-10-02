@@ -57,7 +57,17 @@ export async function createRouter(routesDir: string) {
     })
 }
 
-export async function generateRouter(routesDir: string, outputFile: string) {
+type GeneratorOptions = {
+    // <!-- INJECT_GENERATOR_OPTIONS_MARKDOWN_TABLE -->   
+    /**
+     * File extension to append to import statements in the generated router.
+     * Useful when your build setup requires specific extensions.
+     * @example ".js" will generate imports like: import { me } from "./routes/auth/me.js"
+     * @default "" (no extension)
+     */
+    importExtension?: string
+}
+export async function generateRouter(routesDir: string, outputFile: string, options?: GeneratorOptions) {
     const files = walkTree(
         routesDir,
     )
@@ -66,11 +76,13 @@ export async function generateRouter(routesDir: string, outputFile: string) {
 
     const importPaths = exports.map(x => relative(dirname(outputFile), routesDir).concat(x.path))
     const content = buildRouter(exports, (r, e) => {
-        return `${e}.route({ path: '${r.path}' })`
+        return `${e}.route({ path: '${r.path.replace(/\/{0,1}index$/, "")}' })`
     })
 
     let routerContent = `// This file is auto-generated\n\n`
-    routerContent += importPaths.map((x, i) => `import { ${Object.keys(exports[i]!.exports).join(', ')} } from "./${x}"`).join('\n')
+    const extension = options?.importExtension || ""
+
+    routerContent += importPaths.map((x, i) => `import { ${Object.keys(exports[i]!.exports).join(', ')} } from "./${x}${extension}"`).join('\n')
     routerContent += '\n\nexport const router = '
     // eslint-disable-next-line ban/ban
     routerContent += JSON.stringify(content, null, 2)
@@ -82,9 +94,7 @@ export async function generateRouter(routesDir: string, outputFile: string) {
 
 function buildRoutePath(parsedFile: ParsedPath) {
     const directory = parsedFile.dir === parsedFile.root ? '' : parsedFile.dir
-    const name = parsedFile.name.startsWith('index')
-        ? parsedFile.name.replace('index', '')
-        : `/${parsedFile.name}`
+    const name =`/${parsedFile.name}`
 
     return directory + name
 }

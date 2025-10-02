@@ -5,7 +5,7 @@ import { me } from "./routes/auth/me"
 import { signin } from "./routes/auth/signin"
 import { signup } from "./routes/auth/signup"
 import { createPlanet } from "./routes/planets/create"
-import { indexRoute } from "./routes/planets"
+import { indexRoute } from "./routes/planets/index"
 import { listPlanets } from "./routes/planets/list"
 import { findPlanet } from "./routes/planets/{id}/find"
 import { updatePlanet } from "./routes/planets/{id}/update"
@@ -20,7 +20,7 @@ export const router = {
   },
   planets: {
     create: createPlanet.route({ path: '/planets/create' }),
-    indexRoute: indexRoute.route({ path: '/planets' }),
+    index: indexRoute.route({ path: '/planets' }),
     list: listPlanets.route({ path: '/planets/list' }),
     find: findPlanet.route({ path: '/planets/{id}/find' }),
     update: updatePlanet.route({ path: '/planets/{id}/update' })

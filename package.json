@@ -1,6 +1,6 @@
 {
   "name": "orpc-file-based-router",
-  "version": "0.0.18",
+  "version": "0.1.1",
   "description": "File-based router plugin for oRPC - automatically generate oRPC router from your file structure",
   "author": "zeeeeby",
   "license": "MIT",
@@ -30,7 +30,8 @@
   ],
   "scripts": {
     "build": "npm run type-check && unbuild",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "playground": "tsx playground/src/generator.ts"
   },
   "devDependencies": {
     "@orpc/client": "^1.8.5",
