@@ -76,7 +76,7 @@ const handler = new RPCHandler(router);
 
 For users of the [oRPC client](https://orpc.unnoq.com/docs/client/client-side), we provide automatic configuration generation for enhanced type safety and improved developer experience.
 
-1. Add the following code to your main server file (e.g., `server.ts` or `main.ts`). This will automatically regenerate the router configuration each time your server starts:
+1. You can add this code either directly in your server project (e.g., in server.ts or main.ts) or put it into a separate script (e.g., router-gen.ts).
 
 ```typescript
 import { generateRouter } from "orpc-file-based-router";
