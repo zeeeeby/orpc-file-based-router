@@ -57,6 +57,19 @@ export async function createRouter(routesDir: string) {
     })
 }
 
+export function cachedRouter(routesDir: string) {
+    let router: Awaited<ReturnType<typeof createRouter>> | null = null
+
+    return {
+        getRouter: async () => {
+            if (!router) {
+                router = await createRouter(routesDir)
+            }
+            return router
+        }
+    }
+}
+
 type GeneratorOptions = {
     // <!-- INJECT_GENERATOR_OPTIONS_MARKDOWN_TABLE -->   
     /**
@@ -94,7 +107,7 @@ export async function generateRouter(routesDir: string, outputFile: string, opti
 
 function buildRoutePath(parsedFile: ParsedPath) {
     const directory = parsedFile.dir === parsedFile.root ? '' : parsedFile.dir
-    const name =`/${parsedFile.name}`
+    const name = `/${parsedFile.name}`
 
     return directory + name
 }
