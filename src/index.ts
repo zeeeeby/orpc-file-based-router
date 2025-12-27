@@ -57,17 +57,19 @@ export async function createRouter(routesDir: string) {
     })
 }
 
-export function cachedRouter(routesDir: string) {
-    let router: Awaited<ReturnType<typeof createRouter>> | null = null
+export const lazy = <T>(create: () => Promise<T> | T) => {
+    let cache: Promise<T> | null = null
 
-    return {
-        getRouter: async () => {
-            if (!router) {
-                router = await createRouter(routesDir)
-            }
-            return router
+
+    const fn = () => {
+        if (!cache) {
+            cache = Promise.resolve(create())
         }
+        return cache
     }
+
+    fn.reset = () => { cache = null }
+    return fn
 }
 
 type GeneratorOptions = {

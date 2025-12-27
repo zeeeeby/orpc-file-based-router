@@ -62,17 +62,18 @@ const router = await createRouter(routesDir);
 const handler = new RPCHandler(router);
 
 ```
-**Note:** If your environment doesn't support top-level await, just use `cachedRouter` for example in expressjs it could be:
+**Note:** If your environment doesn't support top-level await, just use `lazy` for example in expressjs it could be:
 ```typescript
 import { RPCHandler } from "@orpc/server/node";
-import { cachedRouter } from "orpc-file-based-router";
+import { lazy, createRouter } from "orpc-file-based-router";
 
 const routesDir = new URL("./routes", import.meta.url).pathname;
-const router = cachedRouter(routesDir)
+
+const router = lazy(() => createRouter(routesDir))
 
 app.use('/rpc{/*path}', async (req, res, next) => {
 
-    const handler = new RPCHandler(await router.getRouter());
+    const handler = new RPCHandler(await router());
 
     const { matched } = await handler.handle(req, res, {
         prefix: '/rpc',
