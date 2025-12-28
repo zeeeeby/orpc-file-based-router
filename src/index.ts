@@ -46,18 +46,6 @@ function mergePaths(...paths: string[]) {
         .join('/')}`
 }
 
-
-export async function createRouter(routesDir: string) {
-    const files = walkTree(
-        routesDir,
-    )
-    const exports = await generateRoutes(files)
-
-    return buildRouter(exports, (r, e) => {
-        return (r.exports[e] as any).route({ path: `${r.path}` })
-    })
-}
-
 export const lazy = <T>(create: () => Promise<T> | T) => {
     let cache: Promise<T> | null = null
 
@@ -73,6 +61,14 @@ export const lazy = <T>(create: () => Promise<T> | T) => {
     return fn
 }
 
+/**
+ * @deprecated use generateRouter instead. See https://github.com/zeeeeby/orpc-file-based-router?tab=readme-ov-file#quickstart for more details.
+ */
+export async function createRouter(routesDir: string) {
+    const msg = 'createRouter is deprecated. Please use generateRouter to generate router file at build time. See https://github.com/zeeeeby/orpc-file-based-router?tab=readme-ov-file#quickstart for more details.'
+    throw new Error(msg)
+}
+
 type GeneratorOptions = {
     // <!-- INJECT_GENERATOR_OPTIONS_MARKDOWN_TABLE -->   
     /**
@@ -82,11 +78,6 @@ type GeneratorOptions = {
      * @default "" (no extension)
      */
     importExtension?: string
-    /**
-     * When set to true, each route will be wrapped with OpenAPI .route({ path: '...', method: '...' }) call
-     * @default true
-     */
-    enableOpenAPI?: boolean
     /**
      * Additional HTTP methods to recognize from export names.
      */
@@ -103,13 +94,12 @@ export async function generateRouter(routesDir: string, outputFile: string, opti
 
     const content = buildRouter(exports, (r, e) => {
         const alias = routePathToAlias(r.path, e)
-        if (options?.enableOpenAPI ?? true) {
-            const orpcMeta = isORPCProcedure(r.exports[e] as any) ? (r.exports[e] as any)['~orpc'] : undefined
-            const method = isMethodExport(e, options?.additionalMethods || []) ? getMethodKey(e) : orpcMeta?.route?.method || "POST"
-            const config = { path: r.path.replace(/\/{0,1}index$/, ""), method: method }
-            return `${alias}.route({ path: '${config.path}', method: '${config.method}' })`
-        }
-        return alias
+
+        const orpcMeta = isORPCProcedure(r.exports[e] as any) ? (r.exports[e] as any)['~orpc'] : undefined
+        const method = isMethodExport(e, options?.additionalMethods || []) ? getMethodKey(e) : orpcMeta?.route?.method || "POST"
+        const config = { path: r.path.replace(/\/{0,1}index$/, ""), method: method }
+
+        return `${alias}.route({ path: '${config.path}', method: '${config.method}' })`
     })
 
     let routerContent = `// This file is auto-generated\n\n`
@@ -230,12 +220,23 @@ async function generateRoutes(files: ModuleFile[]) {
         const exports = await import(
             MODULE_IMPORT_PREFIX + path.join(file.path, file.name)
         )
-
-        routes.push({
-            exports,
-            path: routePath,
-        })
+        const cleanedExports = removeNonOrpcExports(exports)
+        if (Object.keys(cleanedExports).length > 0)
+            routes.push({
+                exports: cleanedExports,
+                path: routePath,
+            })
     }
 
     return routes
+}
+
+const removeNonOrpcExports = (exports: RouteModule) => {
+    const cleanedExports: RouteModule = {}
+    for (const key in exports) {
+        if (isORPCProcedure(exports[key] as Router)) {
+            cleanedExports[key] = exports[key]
+        }
+    }
+    return cleanedExports
 }
