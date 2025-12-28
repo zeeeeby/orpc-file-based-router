@@ -1,6 +1,7 @@
 import type { ParsedPath } from 'node:path'
 import { readdirSync, statSync, writeFileSync } from 'node:fs'
 import path, { dirname, join, relative } from 'node:path'
+import { getMethodKey, isMethodExport } from './utils'
 
 type ModuleFile = {
     name: string
@@ -82,10 +83,14 @@ type GeneratorOptions = {
      */
     importExtension?: string
     /**
-     * When set to true, each route will be wrapped with openapi .route({ path: '...' }) call
+     * When set to true, each route will be wrapped with OpenAPI .route({ path: '...', method: '...' }) call
      * @default true
      */
-    includeRoute?: boolean
+    enableOpenAPI?: boolean
+    /**
+     * Additional HTTP methods to recognize from export names.
+     */
+    additionalMethods?: string[]
 }
 export async function generateRouter(routesDir: string, outputFile: string, options?: GeneratorOptions) {
     const files = walkTree(
@@ -95,17 +100,27 @@ export async function generateRouter(routesDir: string, outputFile: string, opti
     const exports = await generateRoutes(files)
 
     const importPaths = exports.map(x => relative(dirname(outputFile), routesDir).concat(x.path))
+
     const content = buildRouter(exports, (r, e) => {
-        if (options?.includeRoute ?? true) {
-            return `${e}.route({ path: '${r.path.replace(/\/{0,1}index$/, "")}' })`
+        const alias = routePathToAlias(r.path, e)
+        if (options?.enableOpenAPI ?? true) {
+            const orpcMeta = isORPCProcedure(r.exports[e] as any) ? (r.exports[e] as any)['~orpc'] : undefined
+            const method = isMethodExport(e, options?.additionalMethods || []) ? getMethodKey(e) : orpcMeta?.route?.method || "POST"
+            const config = { path: r.path.replace(/\/{0,1}index$/, ""), method: method }
+            return `${alias}.route({ path: '${config.path}', method: '${config.method}' })`
         }
-        return e
+        return alias
     })
 
     let routerContent = `// This file is auto-generated\n\n`
     const extension = options?.importExtension || ""
 
-    routerContent += importPaths.map((x, i) => `import { ${Object.keys(exports[i]!.exports).join(', ')} } from "./${x}${extension}"`).join('\n')
+    routerContent += importPaths
+        .map((x, i) => `import { ${Object.keys(exports[i]!.exports)
+            .map(y => `${y} as ${routePathToAlias(exports[i]!.path, y)}`)
+            .join(', ')} } from "./${x}${extension}"`)
+        .join('\n')
+
     routerContent += '\n\nexport const router = '
     // eslint-disable-next-line ban/ban
     routerContent += JSON.stringify(content, null, 2)
@@ -113,6 +128,11 @@ export async function generateRouter(routesDir: string, outputFile: string, opti
         .replace(/(\s*)([a-zA-Z0-9]+-[a-zA-Z0-9-]+):/g, '$1"$2":');
 
     writeFileSync(join(outputFile), routerContent)
+}
+
+function routePathToAlias(routePath: string, methodName: string) {
+    const cleanPath = routePath.replace(/\{(\w+)\}/g, '$1').replace(/-/g, '_')
+    return cleanPath.split("/").filter(Boolean).join("_") + "__" + methodName
 }
 
 function buildRoutePath(parsedFile: ParsedPath) {

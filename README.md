@@ -99,35 +99,34 @@ generateRouter(routesDir, outputFile);
 
 2. Generated router is ready to use in client:
 
-> ⚠️ If you don't want plugin to generate openapi `route({})` suffix, just set parameter `includeRoute` to `false`
-
 ```typescript
 // router.ts
-import { me } from "./routes/auth/me";
-import { signin } from "./routes/auth/signin";
-import { signup } from "./routes/auth/signup";
-import { createPlanet } from "./routes/planets/create";
-import { indexRoute } from "./routes/planets";
-import { listPlanets } from "./routes/planets/list";
-import { findPlanet } from "./routes/planets/{id}/find";
-import { updatePlanet } from "./routes/planets/{id}/update";
-import { sse } from "./routes/sse";
+
+import { me as auth_me__me } from "./routes/auth/me.js"
+import { signin as auth_signin__signin } from "./routes/auth/signin.js"
+import { signup as auth_signup__signup } from "./routes/auth/signup.js"
+import { createPlanet as planets_create__createPlanet } from "./routes/planets/create.js"
+import { indexRoute as planets_index__indexRoute } from "./routes/planets/index.js"
+import { listPlanets as planets_list__listPlanets } from "./routes/planets/list.js"
+import { findPlanet as planets_id_find__findPlanet } from "./routes/planets/{id}/find.js"
+import { updatePlanet as planets_id_update__updatePlanet } from "./routes/planets/{id}/update.js"
+import { sse as sse__sse } from "./routes/sse.js"
 
 export const router = {
   auth: {
-    me: me.route({ path: "/auth/me" }),
-    signin: signin.route({ path: "/auth/signin" }),
-    signup: signup.route({ path: "/auth/signup" }),
+    me: auth_me__me.route({ path: '/auth/me', method: 'GET' }),
+    signin: auth_signin__signin.route({ path: '/auth/signin', method: 'POST' }),
+    signup: auth_signup__signup.route({ path: '/auth/signup', method: 'POST' })
   },
   planets: {
-    create: createPlanet.route({ path: "/planets/create" }),
-    indexRoute: indexRoute.route({ path: "/planets" }),
-    list: listPlanets.route({ path: "/planets/list" }),
-    find: findPlanet.route({ path: "/planets/{id}/find" }),
-    update: updatePlanet.route({ path: "/planets/{id}/update" }),
+    create: planets_create__createPlanet.route({ path: '/planets/create', method: 'POST' }),
+    index: planets_index__indexRoute.route({ path: '/planets', method: 'GET' }),
+    list: planets_list__listPlanets.route({ path: '/planets/list', method: 'GET' }),
+    find: planets_id_find__findPlanet.route({ path: '/planets/{id}/find', method: 'GET' }),
+    update: planets_id_update__updatePlanet.route({ path: '/planets/{id}/update', method: 'PUT' })
   },
-  sse: sse.route({ path: "/sse" }),
-};
+  sse: sse__sse.route({ path: '/sse', method: 'GET' })
+}
 
 
 // lib/orpc.ts
@@ -142,9 +141,21 @@ When using `generateRouter`, you can provide additional options to customize the
 | Field              | Type      | Required | Default Value | Description                                                                                                                     |
 |-------------------|----------|--------------|-----------------------|------------------------------------------------------------------------------------------------------------------------------|
 | `importExtension` | string   | false         | `""`(No extension) | File extension to append to import statements in the generated router. Useful when your build setup requires specific extensions. <br>Example: `.js` → `import { me } from "./routes/auth/me.js"` |
-| `includeRoute` | boolean   | false         | `true` | When set to true, each route will be wrapped with openapi `.route({ path: '...' })` call   |
+| `enableOpenAPI` | boolean   | false         | `true` | When set to true, each route will be wrapped with OpenAPI .route({ path: '...', method: '...' }) call   |
+| `additionalMethods` | string[]   | false         | `[]` | Additional HTTP methods to recognize from export names.   |
 
 
+## Examples
+### HTTP Method Matching
+If you export functions named e.g. `get`, `post`, `put`, `patch`, `delete/del` etc. from a route file, those will get matched their corresponding http method automatically.
+
+```typescript
+// ./routes/planets.ts
+
+export const get = orpc.handler(async ({ input, context }) => {})
+
+export const post = orpc.handler(async ({ input, context }) => {})
+```
 
 ## 📄 License
 
