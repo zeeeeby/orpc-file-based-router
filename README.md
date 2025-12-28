@@ -9,10 +9,6 @@ structure, inspired by Next.js and express-file-routing approaches.
 - 🔄 **Zero Configuration**: Generate routes automatically based on your directory structure
 - ⚡️ **Development Speed**: Eliminate boilerplate code and reduce maintenance overhead
 - 🔍 **Dynamic Routing**: Support for path parameters using `{param}` syntax in file names
-- 📑 **Index Routes**: Support for index routes via `index.ts` files
-
-> ⚠️ **IMPORTANT:** At this time, the plugin's functionality is only guaranteed
-> in nodejs runtime
 
 ## Quickstart
 
@@ -103,6 +99,8 @@ generateRouter(routesDir, outputFile);
 
 2. Generated router is ready to use in client:
 
+> ⚠️ If you don't want plugin to generate openapi `route({})` suffix, just set parameter `includeRoute` to `false`
+
 ```typescript
 // router.ts
 import { me } from "./routes/auth/me";
@@ -131,6 +129,7 @@ export const router = {
   sse: sse.route({ path: "/sse" }),
 };
 
+
 // lib/orpc.ts
 const client: RouterClient<typeof router> = createORPCClient(link)
 
@@ -143,6 +142,7 @@ When using `generateRouter`, you can provide additional options to customize the
 | Field              | Type      | Required | Default Value | Description                                                                                                                     |
 |-------------------|----------|--------------|-----------------------|------------------------------------------------------------------------------------------------------------------------------|
 | `importExtension` | string   | false         | `""`(No extension) | File extension to append to import statements in the generated router. Useful when your build setup requires specific extensions. <br>Example: `.js` → `import { me } from "./routes/auth/me.js"` |
+| `includeRoute` | boolean   | false         | `true` | When set to true, each route will be wrapped with openapi `.route({ path: '...' })` call   |
 
 
 

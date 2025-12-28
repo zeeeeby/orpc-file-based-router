@@ -81,6 +81,11 @@ type GeneratorOptions = {
      * @default "" (no extension)
      */
     importExtension?: string
+    /**
+     * When set to true, each route will be wrapped with openapi .route({ path: '...' }) call
+     * @default true
+     */
+    includeRoute?: boolean
 }
 export async function generateRouter(routesDir: string, outputFile: string, options?: GeneratorOptions) {
     const files = walkTree(
@@ -91,7 +96,10 @@ export async function generateRouter(routesDir: string, outputFile: string, opti
 
     const importPaths = exports.map(x => relative(dirname(outputFile), routesDir).concat(x.path))
     const content = buildRouter(exports, (r, e) => {
-        return `${e}.route({ path: '${r.path.replace(/\/{0,1}index$/, "")}' })`
+        if (options?.includeRoute ?? true) {
+            return `${e}.route({ path: '${r.path.replace(/\/{0,1}index$/, "")}' })`
+        }
+        return e
     })
 
     let routerContent = `// This file is auto-generated\n\n`
