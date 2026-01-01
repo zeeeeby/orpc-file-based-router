@@ -57,7 +57,7 @@ const outputFile = new URL("./router.ts", import.meta.url).pathname;
 generateRouter(routesDir, outputFile);
 ```
 
-5. Add script to `package.json`
+5. Add script to `package.json` like this
 ```json
 {
   "scripts": {      
