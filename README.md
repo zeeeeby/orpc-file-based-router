@@ -45,10 +45,10 @@ src/routes
 
 3. Each file should export an oRPC function (non-oRPC exports will be ignored)
 
-4. Generate your router before starting the server using the `generateRouter` function:
+4. Create script to generate routes
 
 ```typescript
-// router-gen.ts
+// routes-gen.ts
 import { generateRouter } from "orpc-file-based-router";
 
 const routesDir = new URL("./routes", import.meta.url).pathname;
@@ -57,7 +57,17 @@ const outputFile = new URL("./router.ts", import.meta.url).pathname;
 generateRouter(routesDir, outputFile);
 ```
 
-5. Import and use the generated router in your server:
+5. Add script to `package.json`
+```json
+{
+  "scripts": {      
+      "routes-gen": "tsx ./src/routes-gen.ts",
+      "dev": "yarn routes-gen && yarn start-dev-server"
+  }
+}
+```
+
+6. Import and use the generated router in your server:
 
 ```typescript
 import { RPCHandler } from "@orpc/server/node";
