@@ -44,6 +44,11 @@ src/routes
 ```
 
 3. Each file should export an oRPC function (non-oRPC exports will be ignored)
+```typescript
+import { os } from '@orpc/server'
+
+export const createPlanet = os.handler(async ({ context }) => {})
+```
 
 4. Create script to generate routes
 
