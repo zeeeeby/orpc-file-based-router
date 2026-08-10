@@ -1,3 +1,5 @@
+
+
 # orpc-file-based-router
 
 A plugin for [oRPC](https://orpc.unnoq.com) that automatically generates an oRPC router configuration based on your file
@@ -47,7 +49,7 @@ src/routes
 ```typescript
 import { os } from '@orpc/server'
 
-export const createPlanet = os.handler(async ({ context }) => {})
+export const createPlanet = os.route().handler(async ({ context }) => {})
 ```
 
 4. Create script to generate routes
